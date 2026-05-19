@@ -1,4 +1,4 @@
-package hr.spring.postapi.data;
+package hr.spring.postapi.repository;
 
 import hr.spring.postapi.entities.Post;
 import org.springframework.data.jpa.repository.Query;

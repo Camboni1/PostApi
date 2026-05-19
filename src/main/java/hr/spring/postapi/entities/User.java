@@ -1,13 +1,11 @@
 package hr.spring.postapi.entities;
 
+import hr.spring.postapi.enums.AppRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @Entity
@@ -33,9 +31,8 @@ public class User {
     @NotEmpty
     private String password;
 
-    @Builder.Default
-    @Column(name = "roles")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    private List<String> userRoles = new ArrayList<>(List.of("USER"));
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false,  length = 20)
+    private AppRole role = AppRole.USER;
+
 }

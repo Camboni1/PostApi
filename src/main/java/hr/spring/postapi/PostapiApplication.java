@@ -1,6 +1,6 @@
 package hr.spring.postapi;
 
-import hr.spring.postapi.data.PostRepository;
+import hr.spring.postapi.repository.PostRepository;
 import hr.spring.postapi.service.PostService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

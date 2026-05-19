@@ -1,6 +1,6 @@
 package hr.spring.postapi.service;
 
-import hr.spring.postapi.data.PostRepository;
+import hr.spring.postapi.repository.PostRepository;
 import hr.spring.postapi.entities.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
