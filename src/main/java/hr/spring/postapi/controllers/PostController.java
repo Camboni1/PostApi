@@ -1,14 +1,13 @@
 package hr.spring.postapi.controllers;
 
 import hr.spring.postapi.entities.Post;
-import hr.spring.postapi.logic.PostService;
+import hr.spring.postapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

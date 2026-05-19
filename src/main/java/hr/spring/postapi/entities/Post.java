@@ -1,15 +1,17 @@
 package hr.spring.postapi.entities;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
-@Data // Permet à Lombok de générer les getters et les setters
+@Getter
+@Setter
 @Entity
 @Table(name = "posts")
-public class Post {
+@AllArgsConstructor
+@RequiredArgsConstructor public class Post {
     /**
      * Un identifiant
      * Un titre,
@@ -35,24 +37,13 @@ public class Post {
 
     private LocalDate date;
 
-    public Post() {}
+    @Column(name = "user_id",nullable = false)
+    @ManyToOne(
+            targetEntity = User.class,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Long user_id;
 
-    public Post(String titre, String description, String url, int like, String localisation) {
-        this.title = titre;
-        this.description = description;
-        this.url = url;
-        this.like = like;
-        this.location = localisation;
-        this.date = LocalDate.now();
-    }
-
-    public Post(int id, String titre, String description, String url, int like, String localisation) {
-        this.id = id;
-        this.title = titre;
-        this.description = description;
-        this.url = url;
-        this.like = like;
-        this.location = localisation;
-    }
 
 }
