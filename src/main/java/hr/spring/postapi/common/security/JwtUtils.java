@@ -32,7 +32,7 @@ public class JwtUtils
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("userId", userDetails.getUser().getId())
-                .claim("role", userDetails.getUser().getUserRoles().toString())
+                .claim("role", userDetails.getUser().getRole().name())
                 .issuer("hr.spring.postapi")
                 .id(UUID.randomUUID().toString())
                 .issuedAt(new Date())
