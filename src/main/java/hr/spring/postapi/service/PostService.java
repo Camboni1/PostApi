@@ -1,8 +1,9 @@
 package hr.spring.postapi.service;
 
-import hr.spring.postapi.repository.PostRepository;
 import hr.spring.postapi.entities.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import hr.spring.postapi.entities.User;
+import hr.spring.postapi.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,63 +11,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
-    @Autowired
-    private PostRepository postRepository;
 
-    public List<Post> getPosts() {
-        List<Post> Posts = new ArrayList<>();
-        for (Post pst : postRepository.findAll()) {
-            Posts.add(pst);
-        }
-        return Posts;
+    private final PostRepository postRepository;
+
+    public List<Post> getPosts(String localisation, LocalDate date, String title) {
+        if (date != null) return new ArrayList<>(postRepository.findByDate(date));
+        if (localisation != null) return new ArrayList<>(postRepository.findByLocationContainingIgnoreCase(localisation));
+        if (title != null) return new ArrayList<>(postRepository.findByTitleLike(title));
+        return new ArrayList<>(postRepository.findAll());
     }
-    public List<Post> getPostsLocalisation(String localisation) {
-        List<Post> Posts = new ArrayList<>();
-        for (Post pst : postRepository.findByLocation(localisation)) {
-            Posts.add(pst);
-        }
-        return Posts;
+
+    public List<Post> getPostsBetween(LocalDate start, LocalDate end) {
+        return new ArrayList<>(postRepository.findByDateGreaterThanEqual(start, end));
     }
-    public List<Post> getPostsDate(LocalDate date) {
-        List<Post> Posts = new ArrayList<>();
-        for (Post pst : postRepository.findByDate(date)) {
-            Posts.add(pst);
-        }
-        return Posts;
+
+    public Post getPost(int id) {
+        return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
     }
+
     public Post getOldestPost() {
         return postRepository.orderByDateAscLimit1();
     }
-    public List<Post> getPostsByTilteLike(String title) {
-        return new ArrayList<>(postRepository.findByTitleLike(title));
+
+    public Post createPost(Post pst, User author) {
+        Post post = new Post(pst.getTitle(), pst.getDescription(), pst.getUrl(), pst.getLike(), pst.getLocation());
+        post.setUser(author);
+        post.setDate(LocalDate.now());
+        return postRepository.save(post);
     }
-    public List<Post> getPostsByLocationContainingIgnoreCase(String location) {
-        return new ArrayList<>(postRepository.findByLocationContainingIgnoreCase(location));
+
+    public Post replacePost(int id, Post update) {
+        Post existing = getPost(id);
+        existing.setTitle(update.getTitle());
+        existing.setDescription(update.getDescription());
+        existing.setUrl(update.getUrl());
+        existing.setLike(update.getLike());
+        existing.setLocation(update.getLocation());
+        return postRepository.save(existing);
     }
-    public List<Post> getPostsBetweenDate(LocalDate startDate, LocalDate endDate) {
-        List<Post> Posts = new ArrayList<>(postRepository.findByDateGreaterThanEqual(startDate, endDate));
-        return Posts;
+
+    public Post partialUpdate(int id, Post update) {
+        Post existing = getPost(id);
+        if (update.getTitle() != null) existing.setTitle(update.getTitle());
+        if (update.getDescription() != null) existing.setDescription(update.getDescription());
+        if (update.getUrl() != null) existing.setUrl(update.getUrl());
+        if (update.getLike() != 0) existing.setLike(update.getLike());
+        if (update.getLocation() != null) existing.setLocation(update.getLocation());
+        return postRepository.save(existing);
     }
-    public Post getPost(int id) {
-        return postRepository.findById(id).orElseThrow(()->new PostNotFoundException(id));
+
+    public Post likePost(int id) {
+        Post post = getPost(id);
+        post.setLike(post.getLike() + 1);
+        return postRepository.save(post);
     }
+
+    public Post dislikePost(int id) {
+        Post post = getPost(id);
+        if (post.getLike() >= 1) post.setLike(post.getLike() - 1);
+        return postRepository.save(post);
+    }
+
     public void deletePost(int id) {
-        if (postRepository.findById(id).isEmpty()) {
-            throw new PostNotFoundException(id);
-        }
+        getPost(id);
         postRepository.deleteById(id);
     }
 
     public void deleteAllPosts() {
-        List<Post> list = getPosts();
-        for (Post pst : list) {
-            deletePost(pst.getId());
-        }
+        postRepository.deleteAll();
     }
-
-    public Post savePost(Post post) {
-        return postRepository.save(post);
-    }
-
 }

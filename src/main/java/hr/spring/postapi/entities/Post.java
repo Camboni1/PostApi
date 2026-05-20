@@ -37,13 +37,16 @@ import java.time.LocalDate;
 
     private LocalDate date;
 
-    @Column(name = "user_id",nullable = false)
-    @ManyToOne(
-            targetEntity = User.class,
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private Long user_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 
+    public Post(String title, String description, String url, int like, String location) {
+        this.title = title;
+        this.description = description;
+        this.url = url;
+        this.like = like;
+        this.location = location;
+    }
 }

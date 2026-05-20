@@ -9,10 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
 @RequiredArgsConstructor
 public class UserDetailsImplementation implements UserDetails {
 
+    @Getter
     private final User user;
 
     @Override
@@ -27,7 +27,7 @@ public class UserDetailsImplementation implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getPasswordHash();
     }
 
     @Override
