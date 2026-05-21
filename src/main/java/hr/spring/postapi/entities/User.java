@@ -1,5 +1,6 @@
 package hr.spring.postapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hr.spring.postapi.enums.AppRole;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +25,7 @@ public class User {
     private String email;
 
     @Column(name = "password_hash", nullable = false)
+    @JsonIgnore
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
